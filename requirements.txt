@@ -1,0 +1,5 @@
+json
+streamlit
+requests
+flask
+sqlite3
