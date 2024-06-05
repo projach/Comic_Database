@@ -36,6 +36,30 @@ with st.container():
                         st.success('Comic uploaded successfully')
                     else:
                         st.error(f'Failed to upload comic. Error: {response.text}')
+                        
+        with st.form(key='update-form'):
+            comic_id_update = st.text_input('Comic ID', key='comic_id_update')
+            title_update = st.text_input('Title', key='title_update')
+            volume_update = st.text_input('Volume', key='volume_update')
+            box_update = st.text_input('Box', key='box_update')
+            submitted = st.form_submit_button('Update comic')
+            if submitted:
+                if not comic_id_update or not title or not volume or not box:
+                    st.error('Please fill in all fields')
+                else:
+                    data = {
+                        'id': comic_id_update,
+                        'title': title_update,
+                        'volume': volume_update,
+                        'box': box_update
+                    }
+                    headers = {'Content-Type': 'application/json'}
+                    response = requests.post('http://localhost:5000/update-comic', data=json.dumps(data), headers=headers)
+                    if response.status_code == 200:
+                        st.success('Comic updated successfully')
+                    else:
+                        st.error(f'Failed to update comic. Error: {response.text}')                
+        
         with st.form(key='delete-form'):
             comic_id = st.text_input('Comic ID', key='comic_id')
             submitted = st.form_submit_button('Delete comic')

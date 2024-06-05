@@ -65,6 +65,29 @@ def delete_comic_sql(comic_id):
     else:
         conn.close()
         return jsonify({'message': 'Comic not found'}), 404
+    
+def update_comic_sql(comic_id, title, volume, box):
+    conn = sqlite3.connect('comics.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM comics WHERE id=?', (comic_id,))
+    result = cursor.fetchone()
+    if result:
+        cursor.execute('UPDATE comics SET title=?, volume=?, box=? WHERE id=?', (title, volume, box, comic_id))
+        conn.commit()
+        conn.close()
+        return jsonify({'message': 'Comic updated successfully'}), 200
+    else:
+        conn.close()
+        return jsonify({'message': 'Comic not found'}), 404
+
+@app.route('/update-comic', methods=['POST'])
+def update_comic():
+    data = request.get_json()
+    comic_id = data.get('id')
+    title = data.get('title')
+    volume = data.get('volume')
+    box = data.get('box')
+    return update_comic_sql(comic_id, title, volume, box)
 
 # Endpoint to handle POST requests for uploading comics
 @app.route('/upload', methods=['POST'])
